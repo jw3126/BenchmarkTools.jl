@@ -390,13 +390,18 @@ macro btime(args...)
         $BenchmarkTools.warmup($bench)
         $tune_phase
         local $trial, $result = $BenchmarkTools.run_result($bench)
-        local $trialmin = $BenchmarkTools.minimum($trial)
-        local $trialallocs = $BenchmarkTools.allocs($trialmin)
-        println("  ",
-                $BenchmarkTools.prettytime($BenchmarkTools.time($trialmin)),
-                " (", $trialallocs , " allocation",
-                $trialallocs == 1 ? "" : "s", ": ",
-                $BenchmarkTools.prettymemory($BenchmarkTools.memory($trialmin)), ")")
+        $BenchmarkTools.showbtime($stdout, $trial)
         $result
     end)
+end
+
+function showbtime(io::IO, trial)
+    trialmin = minimum(trial)
+    trialallocs = allocs(trialmin)
+    println(io, "  ",
+            prettytime(time(trialmin)),
+            " (", trialallocs , " allocation",
+            trialallocs == 1 ? "" : "s", ": ",
+            prettymemory(memory(trialmin)), ")")
+
 end
